@@ -12,6 +12,9 @@
     <!-- 配置注解驱动 可以将request参数与绑定到controller参数上 -->
     <mvc:annotation-driven/>
 
+    <!-- 只把动态信息当做controller处理，忽略静态信息 -->
+    <mvc:default-servlet-handler/>
+
     <!--静态资源映射-->
     <!--本项目把静态资源放在了webapp的statics目录下，资源映射如下-->
     <mvc:resources mapping="/css/**" location="/WEB-INF/static/css/"/>
@@ -28,4 +31,23 @@
 
     <!-- 自动扫描装配 -->
     <context:component-scan base-package="com.composite.controller"/>
+
+    <!-- 国际化资源文件 -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <!-- 国际化信息所在的文件名 -->
+        <property name="basename" value="language"/>
+        <!-- 如果在国际化资源文件中找不到对应代码的信息，就用这个代码作为名称  -->
+        <property name="useCodeAsDefaultMessage" value="true"/>
+    </bean>
+
+    <mvc:interceptors>
+        <!-- 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 -->
+        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang"/>
+        </bean>
+    </mvc:interceptors>
+
+    <!-- 存储区域设置信息 SessionLocaleResolver类通过一个预定义会话名将区域化信息存储在会话中 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
 </beans>
